@@ -35,8 +35,8 @@ public class CustomerRepository(ApplicationDbContext context) : Repository<Custo
 
         var lowerSearchTerm = searchTerm.ToLower();
         return await DbSet
-            .Where(c => c.Name.ToLower().Contains(lowerSearchTerm) ||
-                       c.LastName.ToLower().Contains(lowerSearchTerm))
+            .Where(c => c.Name.Contains(lowerSearchTerm, StringComparison.CurrentCultureIgnoreCase) ||
+                       c.LastName.Contains(lowerSearchTerm, StringComparison.CurrentCultureIgnoreCase))
             .OrderBy(c => c.Name)
             .ThenBy(c => c.LastName)
             .ToListAsync(cancellationToken);

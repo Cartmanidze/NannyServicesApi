@@ -53,5 +53,6 @@ app.UseAuthorization();
 app.MapCustomerEndpoints();
 app.MapProductEndpoints();
 app.MapOrderEndpoints();
-
 app.Run();
+
+public partial class Program;

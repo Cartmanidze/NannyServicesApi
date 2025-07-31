@@ -15,4 +15,6 @@ public interface IUnitOfWork : IDisposable
     Task CommitTransactionAsync(CancellationToken cancellationToken = default);
     
     Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
+    
+    void MarkAsAdded<TEntity>(TEntity entity) where TEntity : class;
 }

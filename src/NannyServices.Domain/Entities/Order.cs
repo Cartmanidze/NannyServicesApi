@@ -34,8 +34,9 @@ public class Order : BaseEntity
         LastEditDate = DateTime.UtcNow;
     }
 
-    public void AddOrderLine(Product product, int count)
+    public OrderLine AddOrderLine(Product product, int count)
     {
+        OrderLine addedLine;
         if (!CanBeModified)
         {
             throw new InvalidOperationException($"Cannot modify order with status {Status}");
@@ -45,16 +46,20 @@ public class Order : BaseEntity
         if (existingLine != null)
         {
             existingLine.UpdateCount(existingLine.Count + count);
+            
+            addedLine = existingLine;
         }
         else
         {
             var orderLine = new OrderLine(product, count, product.Price);
             orderLine.SetOrderId(Id);
             _orderLines.Add(orderLine);
+            addedLine = orderLine;
         }
 
         LastEditDate = DateTime.UtcNow;
         UpdateTimestamp();
+        return addedLine;
     }
 
     public void RemoveOrderLine(Guid orderLineId)

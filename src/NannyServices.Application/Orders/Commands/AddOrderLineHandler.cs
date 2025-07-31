@@ -1,7 +1,6 @@
 using MediatR;
 using NannyServices.Application.DTOs;
 using NannyServices.Application.Mappings;
-
 using NannyServices.Domain.Repositories;
 
 namespace NannyServices.Application.Orders.Commands;
@@ -27,11 +26,12 @@ public sealed class AddOrderLineHandler(IUnitOfWork uow) : IRequestHandler<AddOr
             throw new ArgumentException("Order line count must be greater than zero");
         }
 
-        order.AddOrderLine(product, request.Dto.Count);
+        var orderLine = order.AddOrderLine(product, request.Dto.Count);
+        uow.MarkAsAdded(orderLine);
 
-        await uow.Orders.UpdateAsync(order, cancellationToken);
         await uow.SaveChangesAsync(cancellationToken);
 
-        return order.ToDto();
+        var updated = await uow.Orders.GetByIdWithDetailsAsync(order.Id, cancellationToken);
+        return updated!.ToDto();
     }
 }

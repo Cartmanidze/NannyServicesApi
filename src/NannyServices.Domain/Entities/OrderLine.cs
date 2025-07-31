@@ -14,7 +14,7 @@ public class OrderLine : BaseEntity
     public Money TotalPrice => Price * Count;
 
     /// <summary>
-    ///  For EF Core
+    /// For EF Core
     /// </summary>
     private OrderLine() { }
 

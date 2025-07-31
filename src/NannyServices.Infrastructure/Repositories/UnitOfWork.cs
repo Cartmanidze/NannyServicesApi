@@ -52,4 +52,9 @@ public class UnitOfWork(
         _transaction?.Dispose();
         context.Dispose();
     }
+
+    public void MarkAsAdded<TEntity>(TEntity entity) where TEntity : class
+    {
+        context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Added;
+    }
 }
