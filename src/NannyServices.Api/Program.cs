@@ -1,5 +1,7 @@
 using NannyServices.Application;
 using NannyServices.Infrastructure;
+using NannyServices.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,13 +20,15 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.Migrate();
+    
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("AllowAll");
 
 app.UseAuthorization();
 

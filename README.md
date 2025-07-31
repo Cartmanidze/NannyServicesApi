@@ -15,13 +15,14 @@ cd NannyServicesApi
 dotnet restore
 ```
 
-### 3. Создание базы данных
-```bash
-# Переходим в Infrastructure проект
-cd src/NannyServices.Infrastructure
+### 3. Настройка строки подключения
 
-# Применяем миграции
-dotnet ef database update --startup-project ../NannyServices.Api
+В файле `src/NannyServices.Api/appsettings.json` замените `<YOUR_SQL_SERVER>` на имя вашего SQL Server (например `DESKTOP-95F3MQ0`):
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=<YOUR_SQL_SERVER>\\SQLEXPRESS;Database=NannyServicesDb;Trusted_Connection=True;MultipleActiveResultSets=True;TrustServerCertificate=True"
+}
 ```
 
 ### 4. Запуск приложения
@@ -34,9 +35,10 @@ cd src/NannyServices.Api
 dotnet run
 ```
 
-### 5. Открытие Swagger UI
-Перейдите по адресу: **https://localhost:7180/swagger** или **http://localhost:5168/swagger**
+> При первом запуске база данных создастся сама, миграции применятся автоматически.
 
+### 4. Открытие Swagger UI
+Перейдите по адресу: **https://localhost:7180/swagger** или **http://localhost:5168/swagger**
 
 ## 📋 API Endpoints
 
