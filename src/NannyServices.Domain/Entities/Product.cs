@@ -16,7 +16,9 @@ public class Product : BaseEntity
     public Product(string name, Money price)
     {
         if (string.IsNullOrWhiteSpace(name))
+        {
             throw new ArgumentException("Product name cannot be empty", nameof(name));
+        }
 
         Name = name;
         Price = price ?? throw new ArgumentNullException(nameof(price));
@@ -25,7 +27,9 @@ public class Product : BaseEntity
     public void UpdateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
+        {
             throw new ArgumentException("Product name cannot be empty", nameof(name));
+        }
 
         Name = name;
         UpdateTimestamp();

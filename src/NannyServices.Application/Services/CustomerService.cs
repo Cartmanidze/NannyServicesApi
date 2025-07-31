@@ -76,7 +76,9 @@ public class CustomerService
     {
         var customer = await _unitOfWork.Customers.GetByIdAsync(id, cancellationToken);
         if (customer == null)
+        {
             return false;
+        }
 
         await _unitOfWork.Customers.DeleteAsync(customer, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using NannyServices.Application.Services;
+using MediatR;
+using FluentValidation;
+using NannyServices.Application.Common.Behaviors;
 
 namespace NannyServices.Application;
 
@@ -7,10 +9,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<CustomerService>();
-        services.AddScoped<ProductService>();
-        services.AddScoped<OrderService>();
-
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
+        
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
+        
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        
         return services;
     }
 }

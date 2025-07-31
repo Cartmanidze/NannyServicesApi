@@ -1,28 +1,42 @@
 using NannyServices.Application;
 using NannyServices.Infrastructure;
 using NannyServices.Infrastructure.Data;
+using NannyServices.Api.Endpoints;
 using Microsoft.EntityFrameworkCore;
-using FluentValidation;
+using NannyServices.Api.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-
-builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+builder.Host.UseSerilog();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCors();
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    context.Database.Migrate();
+    if (context.Database.IsRelational())
+    {
+        context.Database.Migrate();
+    }
     
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -30,8 +44,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapCustomerEndpoints();
+app.MapProductEndpoints();
+app.MapOrderEndpoints();
 
 app.Run();
