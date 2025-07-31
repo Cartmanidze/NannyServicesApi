@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    ports:
+      - "5000:80"
+    depends_on:
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Database=NannyServicesDb;User=sa;Password=Your_password123;TrustServerCertificate=true
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Your_password123
+    ports:
+      - "1433:1433" 

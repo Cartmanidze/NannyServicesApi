@@ -32,7 +32,7 @@ public class ProductRepository(ApplicationDbContext context) : Repository<Produc
 
     public async Task<bool> ExistsByNameAsync(string name, Guid? excludeId = null, CancellationToken cancellationToken = default)
     {
-        var query = DbSet.Where(p => p.Name.ToLower() == name.ToLower());
+        var query = DbSet.Where(p => p.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
 
         if (excludeId.HasValue)
         {
